@@ -19,10 +19,10 @@ router.post("/", async (req, res) => {
 
 router.put("/:id", async (req, res) => {
   try {
-    const Post = await Post.findById(req.params.id);
-    if (Post.username === req.body.username) {
+    const post = await Post.findById(req.params.id);
+    if (post.username === req.body.username) {
       try {
-        await Post.findByIdAndUpdate(
+        const updatedPost = await Post.findByIdAndUpdate(
           req.params.id,
           {
             $set: req.body,
@@ -30,12 +30,16 @@ router.put("/:id", async (req, res) => {
           { new: true }
         );
         res.status(200).json("Le post a été modifier avec succès!");
-      } catch (err) {}
+      } catch (err) {
+        console.log(err);
+        res.status(500).json(err);
+      }
     } else {
       res.status(401).json("Vous ne pouvez modifier que votre post!");
     }
   } catch (err) {
-    res.status(500).json(err);
+    console.log(err);
+    res.status(500).json("post not found");
   }
 });
 
@@ -43,18 +47,16 @@ router.put("/:id", async (req, res) => {
 
 router.delete("/:id", async (req, res) => {
   try {
-    const Post = await Post.findById(req.params.id);
-    if (Post.username === req.body.username) {
+    const post = await Post.findById(req.params.id);
+    if (post.username === req.body.username) {
       try {
-        await Post.findByIdAndDelete(
-          req.params.id,
-          {
-            $set: req.body,
-          },
-          { new: true }
-        );
+        await Post.findByIdAndDelete(post._id);
+
         res.status(200).json("Le post a été supprimer avec succès!");
-      } catch (err) {}
+      } catch (err) {
+        console.log(err);
+        res.status(500).json(err);
+      }
     } else {
       res.status(401).json("Vous ne pouvez supprimer que votre post!");
     }

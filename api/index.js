@@ -2,7 +2,7 @@ const express = require("express");
 const app = express();
 const mongoose = require("mongoose");
 const authRoute = require("./routes/auth");
-const dotenv = require("dotenv").config();
+const dotenv = require("dotenv");
 const userRoute = require("./routes/userRoute");
 const postsRoute = require("./routes/postRoute");
 const categoriesRoute = require("./routes/categoriesRoute");
@@ -10,7 +10,7 @@ const multer = require("multer");
 const cors = require("cors");
 
 app.use(cors());
-
+dotenv.config();
 app.use(express.json());
 // Connect to
 

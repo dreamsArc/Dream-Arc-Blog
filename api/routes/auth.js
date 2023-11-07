@@ -35,11 +35,12 @@ router.post("/login", async (req, res) => {
     const validate = await bcrypt.compare(req.body.password, user.password);
     !validate &&
       res.status(400).json("Informations d'identification erronées!");
-
+    console.log(user);
     const { password, ...others } = user._doc;
     res.status(200).json(others);
   } catch (err) {
-    res.status(500).json(err);
+    console.log(err);
+    res.status(500).json("erreur serveur!");
   }
 });
 
