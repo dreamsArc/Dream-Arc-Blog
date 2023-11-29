@@ -13,7 +13,7 @@ const PostShema = new mongoose.Schema(
     },
     photo: {
       type: String,
-      required: false,
+      default: "1699550038878butterbur-3469942_1280.jpg",
     },
     username: {
       type: String,

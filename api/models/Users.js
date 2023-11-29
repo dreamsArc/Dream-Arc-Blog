@@ -25,7 +25,7 @@ const UserShema = new mongoose.Schema(
 
     profilePicture: {
       type: String,
-      default: "",
+      default: "149071.png",
     },
   },
 

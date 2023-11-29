@@ -7,7 +7,9 @@ const bcrypt = require("bcrypt");
 router.post("/register", async (req, res) => {
   try {
     // generate new password
+
     const salt = await bcrypt.genSalt(10);
+
     const hashedPassword = await bcrypt.hash(req.body.password, salt);
 
     // create new user
@@ -30,14 +32,19 @@ router.post("/register", async (req, res) => {
 router.post("/login", async (req, res) => {
   try {
     const user = await User.findOne({ username: req.body.username });
-    !user && res.status(400).json("Informations d'identification erronées!");
-
-    const validate = await bcrypt.compare(req.body.password, user.password);
-    !validate &&
-      res.status(400).json("Informations d'identification erronées!");
     console.log(user);
-    const { password, ...others } = user._doc;
-    res.status(200).json(others);
+    if (!user) {
+      return res.status(400).json("Informations d'identification erronées!");
+    } else {
+      console.log("utilisateur identifié!");
+      const validate = await bcrypt.compare(req.body.password, user.password);
+      if (!validate) {
+        return res.status(400).json("Informations d'identification erronées!");
+      }
+      console.log(user);
+      const { password, ...others } = user._doc;
+      res.status(200).json(others);
+    }
   } catch (err) {
     console.log(err);
     res.status(500).json("erreur serveur!");

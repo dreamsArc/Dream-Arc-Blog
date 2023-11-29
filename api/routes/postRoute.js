@@ -1,5 +1,4 @@
 const router = require("express").Router();
-const User = require("../models/Users");
 
 const Post = require("../models/Post");
 
@@ -22,7 +21,7 @@ router.put("/:id", async (req, res) => {
     const post = await Post.findById(req.params.id);
     if (post.username === req.body.username) {
       try {
-        const updatedPost = await Post.findByIdAndUpdate(
+        await Post.findByIdAndUpdate(
           req.params.id,
           {
             $set: req.body,
@@ -82,19 +81,27 @@ router.get("/:id", async (req, res) => {
 router.get("/", async (req, res) => {
   const username = req.query.user;
   const catName = req.query.cat;
+  const searchQuery = req.query.search;
 
   try {
     let posts;
-    if (username) {
-      posts = await Post.find({ username });
+    if (searchQuery) {
+      posts = await Post.find({
+        title: {
+          $regex: searchQuery,
+          $options: "i",
+        },
+      }).sort({ createdAt: -1 });
+    } else if (username) {
+      posts = await Post.find({ username }).sort({ createdAt: -1 });
     } else if (catName) {
       posts = await Post.find({
         categories: {
           $in: [catName],
         },
-      });
+      }).sort({ createdAt: -1 });
     } else {
-      posts = await Post.find();
+      posts = await Post.find().sort({ createdAt: -1 });
     }
     res.status(200).json(posts);
   } catch (err) {
